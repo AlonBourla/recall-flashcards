@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#18243a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Recall">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Recall — Flashcards</title>
+<style>
+:root{color-scheme:dark;--bg:#101827;--panel:#1b2940;--panel2:#22334e;--text:#f4f7fb;--muted:#a9b8ce;--accent:#77a7ff;--good:#59c99a;--bad:#ff8b8b;--line:#344762}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) 16px calc(20px + env(safe-area-inset-bottom));max-width:760px;margin-inline:auto}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 0 12px}h1{font-size:25px;margin:0}h2{font-size:19px;margin:0 0 12px}.muted{color:var(--muted)}button,input,textarea,select{font:inherit}button{border:0;border-radius:12px;padding:12px 15px;background:var(--accent);color:#10203a;font-weight:700;cursor:pointer}button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}button.danger{background:#633b4a;color:#fff}button:disabled{opacity:.45}.tabs{display:flex;gap:7px;overflow:auto;padding:8px 0 14px}.tabs button{white-space:nowrap;padding:10px 13px}.tabs button.active{background:var(--accent);color:#10203a}.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:17px;margin:10px 0}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.stat{background:var(--panel2);border-radius:13px;padding:13px}.stat b{display:block;font-size:24px}.stat span{font-size:12px;color:var(--muted)}.deck{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}.deck:last-child{border:0}.deck strong{display:block}.deck small{color:var(--muted)}.field{display:grid;gap:6px;margin:12px 0}.field label{font-size:13px;color:var(--muted)}input,textarea,select{width:100%;border:1px solid var(--line);border-radius:11px;background:#111e31;color:var(--text);padding:12px}textarea{min-height:92px;resize:vertical}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.flashcard{min-height:230px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:24px;cursor:pointer}.flashcard .face{font-size:23px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}.flashcard .hint{margin-top:24px;color:var(--muted);font-size:13px}.rating{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:12px}.rating button{padding:12px 4px}.rating button:nth-child(1){background:#ffb1a8}.rating button:nth-child(2){background:#f6cb7c}.rating button:nth-child(3){background:#82c6b0}.rating button:nth-child(4){background:#77a7ff}.empty{text-align:center;padding:30px 12px;color:var(--muted)}.hidden{display:none!important}.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}.tag{font-size:12px;background:var(--panel2);padding:4px 8px;border-radius:20px;color:var(--muted)}.notice{font-size:13px;color:var(--muted);line-height:1.5}.progress{height:7px;background:#344762;border-radius:9px;overflow:hidden;margin:12px 0}.progress>div{height:100%;background:var(--good);width:0}
+</style>
+</head>
+<body>
+<header><div><h1>Recall</h1><div class="muted" style="font-size:13px">Your private, offline flashcards</div></div><span class="tag">LOCAL</span></header>
+<nav class="tabs" id="tabs">
+<button class="active" data-page="study">Study</button><button data-page="decks">Decks</button><button data-page="add">Add cards</button><button data-page="tools">Import / export</button>
+</nav>
+<main>
+<section id="page-study">
+<div class="stats">
+<div class="stat"><b id="dueCount">0</b><span>Due today</span></div>
+<div class="stat"><b id="totalCount">0</b><span>Total cards</span></div>
+<div class="stat"><b id="learnedCount">0</b><span>Reviewed</span></div>
+</div>
+<div class="panel">
+<div class="row"><div><h2>Today's review</h2><div class="muted" id="studyDeckLabel">All decks</div></div><select id="studyDeck" aria-label="Choose deck"><option value="all">All decks</option></select></div>
+<div class="progress"><div id="progressBar"></div></div>
+<div id="studyArea" class="empty">You're all caught up. Add a card or choose another deck.</div>
+</div>
+</section>
+<section id="page-decks" class="hidden">
+<div class="panel"><h2>Your decks</h2><div id="deckList"></div>
+<div class="field"><label for="newDeckName">New deck name</label><div class="row"><input id="newDeckName" placeholder="e.g. Hebrew vocabulary"><button id="createDeck">Create</button></div></div></div>
+</section>
+<section id="page-add" class="hidden">
+<div class="panel"><h2>Create a flashcard</h2>
+<div class="field"><label for="cardDeck">Deck</label><select id="cardDeck"></select></div>
+<div class="field"><label for="front">Front — question or word</label><textarea id="front" placeholder="What do you want to remember?"></textarea></div>
+<div class="field"><label for="back">Back — answer or meaning</label><textarea id="back" placeholder="The answer..."></textarea></div>
+<div class="field"><label for="tags">Tags (optional, comma separated)</label><input id="tags" placeholder="verbs, biology, exam"></div>
+<button id="saveCard">Save card</button><p id="addMessage" class="notice"></p></div>
+</section>
+<section id="page-tools" class="hidden">
+<div class="panel"><h2>Import cards</h2><p class="notice">CSV format: <b>Deck,Front,Back,Tags</b>. The first row may be a header. Use a UTF-8 CSV file exported from a spreadsheet.</p><input id="csvFile" type="file" accept=".csv,text/csv"><div class="actions"><button id="importBtn">Import CSV</button></div><p id="importMessage" class="notice"></p></div>
+<div class="panel"><h2>Backup your collection</h2><p class="notice">Export a JSON backup to keep a copy of all decks, cards and review progress. Store it somewhere safe.</p><div class="actions"><button id="exportBtn">Export backup</button><button class="secondary" id="exportCsvBtn">Export CSV</button></div>
+<div class="field"><label for="backupFile">Restore from JSON backup</label><input id="backupFile" type="file" accept=".json"></div><button class="secondary" id="restoreBtn">Restore backup (replaces current data)</button><p id="backupMessage" class="notice"></p></div>
+<div class="panel"><h2>About scheduling</h2><p class="notice">This starter version uses a simple interval-based spaced-repetition scheduler. Rate each answer from Again to Easy; the next review date is calculated automatically. It is Anki-inspired, not an implementation of Anki's FSRS algorithm, sync, add-ons or full desktop feature set.</p></div>
+</section>
+</main>
+<script src="app.js"></script>
+</body></html>
